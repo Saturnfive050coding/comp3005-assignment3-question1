@@ -7,10 +7,12 @@ public class Main {
 
     public static void getAllStudents(Connection connection) {
         try {
+        	  //Executes the query that gets every student in the students table
             Statement statement = connection.createStatement();
             statement.executeQuery("SELECT * FROM students");
             ResultSet resultSet = statement.getResultSet();
-
+						
+						//Runs a loop that outputs every student in the students table to the terminal
             while(resultSet.next()) {
                 System.out.print(resultSet.getInt("student_id") + " \t");
                 System.out.print(resultSet.getString("first_name") + " ");
@@ -31,7 +33,8 @@ public class Main {
 
         try {
             Scanner scan = new Scanner(System.in);
-
+						
+						//Obtain student info from the user
             System.out.print("Input first name: ");
             fName = scan.next();
 
@@ -46,8 +49,10 @@ public class Main {
             eDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
 
             try {
+            		//Prepare the SQL statement
                 Statement statement = connection.createStatement();
                 String insertSQL = "INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES (?, ?, ?, ?)";
+                //Add in the parameters provided by the user and execute
                 try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
                     pstmt.setString(1, fName);
                     pstmt.setString(2, lName);
@@ -73,7 +78,8 @@ public class Main {
 
         try {
             Scanner scan = new Scanner(System.in);
-
+						
+						//Obtain the student id and new email value
             System.out.print("Input student id: ");
             id = scan.nextInt();
 
@@ -83,8 +89,10 @@ public class Main {
 
 
             try {
+            		//Prepare the SQL statement
                 Statement statement = connection.createStatement();
                 String insertSQL = "UPDATE students SET email = ? WHERE student_id = ?";
+                //Add in the parameters provided by the user and execute
                 try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
                     pstmt.setString(1, email);
                     pstmt.setInt(2, id);
@@ -108,14 +116,17 @@ public class Main {
         try {
             Scanner scan = new Scanner(System.in);
 
+						//Obtain the student id
             System.out.print("Input student id: ");
             id = scan.nextInt();
 
 
 
             try {
+            		//Prepare the SQL statement
                 Statement statement = connection.createStatement();
                 String insertSQL = "DELETE FROM students WHERE student_id = ?";
+                //Add in the parameters obtained from the user
                 try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
                     pstmt.setInt(1, id);
                     pstmt.executeUpdate();
@@ -133,20 +144,25 @@ public class Main {
     }
 
     public static void main(String[] args) {
+    		//Set all the initial variables
         password pass = new password();
         String url = "jdbc:postgresql://localhost:5432/assignment3";
         String user = "postgres";
         Scanner scan = new Scanner(System.in);
+        //Password is stored in another class that is not uploaded to keep it private
         String password = pass.pwd;
 
+				//Try to connect to the database
         try{
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(url, user, password);
             int choice;
-
+						
+						//Ask the user which function they would like to run
             System.out.print("Choose One:\n1: getAllStudents()\n2: addStudent()\n3: updateStudentEmail()\n4: deleteStudent()\n> ");
             choice = scan.nextInt();
 
+						//Execute the given result, or end the program if none of the options are selected
             switch(choice) {
                 case 1:
                     getAllStudents(connection);
